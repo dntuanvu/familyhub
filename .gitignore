@@ -1,0 +1,17 @@
+node_modules
+.turbo
+dist
+.env
+.env.local
+.expo
+# NestJS build
+apps/api/dist
+# Prisma
+apps/api/prisma/generated
+# Expo
+.expo-shared
+# IDE
+.vscode
+.idea
+# OS
+.DS_Store

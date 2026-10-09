@@ -1,0 +1,42 @@
+# Render blueprint. From the Render dashboard: New → Blueprint → point at this repo.
+# Render will prompt for any env vars not pre-filled below (DATABASE_URL, JWT secrets).
+
+services:
+  - type: web
+    name: family-hub-api
+    runtime: node
+    plan: free
+    region: singapore          # change to oregon/frankfurt/etc. closer to your users
+    rootDir: apps/api
+    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate && pnpm build && pnpm prisma:deploy
+    startCommand: node dist/main.js
+    healthCheckPath: /api/docs
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"           # Render convention; it still maps to 443/80 externally
+      - key: DATABASE_URL
+        sync: false              # paste from Neon dashboard
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL
+        value: 30d
+      - key: CORS_ORIGIN
+        sync: false              # set to your Vercel URL(s), comma-separated
+      - key: WEB_BASE_URL
+        sync: false              # e.g. https://familyhub.app
+      # Email (password reset). Leave MAIL_PROVIDER empty to log emails only.
+      - key: MAIL_PROVIDER
+        value: resend            # or "postmark" or ""
+      - key: MAIL_FROM
+        sync: false              # e.g. "Family Hub <noreply@familyhub.app>"
+      - key: RESEND_API_KEY
+        sync: false              # paste from the Resend dashboard
+      # - key: POSTMARK_SERVER_TOKEN
+      #   sync: false
