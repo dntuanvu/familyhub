@@ -14,10 +14,10 @@ export const hexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 export const memberRole = z.enum(["parent", "child"]);
 export const timeOfDay = z.enum(["morning", "afternoon", "evening"]);
 export const redemptionStatus = z.enum(["pending", "approved", "rejected"]);
-export const locale = z.enum(["en", "vi"]);
+export const locale = z.enum(["en", "zh", "vi"]);
 
-/** ISO weekday: 1 = Monday ... 7 = Sunday. */
-export const isoWeekday = z.number().int().min(1).max(7);
+/** ISO weekday: 1 = Monday ... 7 = Sunday. Not exported: `dates.isoWeekday` is the public helper. */
+const isoWeekday = z.number().int().min(1).max(7);
 export const recurrenceDays = z
   .array(isoWeekday)
   .refine((d) => new Set(d).size === d.length, "Duplicate weekdays");
@@ -161,7 +161,6 @@ export const rewardInputSchema = z.object({
 export type MemberRole = z.infer<typeof memberRole>;
 export type TimeOfDay = z.infer<typeof timeOfDay>;
 export type RedemptionStatus = z.infer<typeof redemptionStatus>;
-export type Locale = z.infer<typeof locale>;
 
 export type Family = z.infer<typeof familySchema>;
 export type Member = z.infer<typeof memberSchema>;
